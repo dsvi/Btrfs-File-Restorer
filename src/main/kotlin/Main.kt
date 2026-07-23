@@ -85,10 +85,10 @@ fun main(args: Array<String>) {
     }
     run {
         try {
-            val p = Runtime.getRuntime().exec("gsettings get org.gnome.desktop.interface scaling-factor")
-            val l = p.inputStream.bufferedReader().readLine()?.split(" ")
+            val p = Runtime.getRuntime().exec(arrayOf("sh", "-c", "xrdb -query | grep dpi"))
+            val l = p.inputStream.bufferedReader().readText()?.split("\t")
             if (l != null && l.size == 2)
-                scale = l[1].toFloat()
+                scale = l[1].toFloat()/96
         }
         catch(e: Throwable){
             val env = System.getenv("GDK_SCALE")
