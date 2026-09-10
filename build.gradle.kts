@@ -40,7 +40,7 @@ compose.desktop {
             outputBaseDir.set(project.rootDir.resolve("out"))
             targetFormats(TargetFormat.AppImage, TargetFormat.Rpm, TargetFormat.Deb)
             packageName = "btrfs-file-restorer"
-            packageVersion = "1.0.1"
+            packageVersion = "1.0.2"
             description = "Restores files from unmountable btrfs filesystem"
             linux {
                 iconFile.set(File("btrfs-file-restorer.png"))
