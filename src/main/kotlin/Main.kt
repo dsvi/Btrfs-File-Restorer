@@ -13,6 +13,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.application
 import androidx.compose.ui.window.rememberWindowState
+import com.jthemedetecor.OsThemeDetector
 import com.materialkolor.dynamicColorScheme
 import kotlin.system.exitProcess
 
@@ -54,7 +55,7 @@ val fonts by lazy { scaledUpFonts() }
 
 val AppName = "btrfs file restorer"
 //val colorScheme = dynamicColorScheme(Color(0xF99703), isAmoled = false, isDark = true)
-val colorScheme = dynamicColorScheme(Color(0x4C662B), isAmoled = false, isDark = true)
+val colorScheme = dynamicColorScheme(Color(0x4C662B), isAmoled = false, isDark = OsThemeDetector.getDetector().isDark)
 
 val currentScreen: MutableState<@Composable () -> Unit> = mutableStateOf<@Composable ()->Unit>(
     @Composable fun(){

@@ -16,6 +16,7 @@ repositories {
 }
 
 dependencies {
+    implementation("org.openani.jsystemthemedetector:jSystemThemeDetector:3.9")
     // Note, if you develop a library, you should use compose.desktop.common.
     // compose.desktop.currentOs should be used in launcher-sourceSet
     // (in a separate module for demo project and in testMain).
