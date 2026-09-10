@@ -1,5 +1,4 @@
 //import androidx.compose.ui.unit.dp
-import androidx.compose.desktop.ui.tooling.preview.Preview
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -54,8 +53,8 @@ val fonts by lazy { scaledUpFonts() }
 
 
 val AppName = "btrfs file restorer"
-//val colorScheme = dynamicColorScheme(Color(0xF99703), isAmoled = false, isDark = false)
-val colorScheme = dynamicColorScheme(Color(0x63A002), isAmoled = false, isDark = false)
+//val colorScheme = dynamicColorScheme(Color(0xF99703), isAmoled = false, isDark = true)
+val colorScheme = dynamicColorScheme(Color(0x4C662B), isAmoled = false, isDark = true)
 
 val currentScreen: MutableState<@Composable () -> Unit> = mutableStateOf<@Composable ()->Unit>(
     @Composable fun(){
@@ -64,7 +63,7 @@ val currentScreen: MutableState<@Composable () -> Unit> = mutableStateOf<@Compos
 )
 
 @Composable
-@Preview
+@androidx.compose.ui.tooling.preview.Preview
 fun App() {
     MaterialTheme(
         colorScheme = colorScheme,
@@ -86,14 +85,12 @@ fun main(args: Array<String>) {
     run {
         try {
             val p = Runtime.getRuntime().exec(arrayOf("sh", "-c", "xrdb -query | grep dpi"))
-            val l = p.inputStream.bufferedReader().readText()?.split("\t")
-            if (l != null && l.size == 2)
+            val l = p.inputStream.bufferedReader().readText().split("\t")
+            if (l.size == 2)
                 scale = l[1].toFloat()/96
         }
         catch(e: Throwable){
-            val env = System.getenv("GDK_SCALE")
-            if (env != null && env.isNotEmpty())
-                scale = env.toFloat()
+            // well... we tried
         }
     }
     println(getServerCmdLine().joinToString(" ") { it })

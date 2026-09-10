@@ -2,7 +2,6 @@ import anarchy.ds.compose.TreeView
 import anarchy.ds.compose.TreeViewElement
 import androidx.compose.animation.*
 import androidx.compose.animation.core.*
-import androidx.compose.desktop.ui.tooling.preview.Preview
 import androidx.compose.foundation.*
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
@@ -12,7 +11,7 @@ import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material.icons.filled.Warning
-import androidx.compose.material.ripple.rememberRipple
+import androidx.compose.material3.ripple
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
@@ -100,7 +99,7 @@ open class FsTreeElement (
                                         root().restore(this@FsTreeElement)
                                     },
                                     interactionSource = remember { MutableInteractionSource() },
-                                    indication = rememberRipple(bounded = true)
+                                    indication = ripple(bounded = true)
                                 ).size(iconSize)
                             )
                         }
@@ -115,7 +114,7 @@ open class FsTreeElement (
                                     root().restoreCancel(this@FsTreeElement)
                                 },
                                 interactionSource = remember { MutableInteractionSource() },
-                                indication = rememberRipple(bounded = true)
+                                indication = ripple(bounded = true)
                             ).size(iconSize)
                         )
                     }
@@ -162,7 +161,7 @@ open class FsTreeElement (
 fun FsTreeElement.root(): RootFsTreeElement{
     var root = this
     while (root.parent != null)
-        root = root.parent!!
+        root = root.parent
     return root as RootFsTreeElement
 }
 
@@ -202,7 +201,7 @@ class RootFsTreeElement: FsTreeElement(""){
 }
 
 @Composable
-@Preview
+@androidx.compose.ui.tooling.preview.Preview
 fun FilesystemTreeView(fsPath: String, outPath: String){
     val root = remember{ RootFsTreeElement() }
 
@@ -236,7 +235,7 @@ fun FilesystemTreeView(fsPath: String, outPath: String){
                         upwardPath.addFirst(e.name)
                         if (e.parent == null)
                             break
-                        e = e.parent!!
+                        e = e.parent
                     }
                     val path = upwardPath.joinToString(separator = "/")
                     val error = server.recover(path)

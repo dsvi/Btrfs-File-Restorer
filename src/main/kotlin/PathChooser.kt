@@ -1,4 +1,3 @@
-import androidx.compose.desktop.ui.tooling.preview.Preview
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -10,7 +9,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 
 @Composable
-@Preview
+@androidx.compose.ui.tooling.preview.Preview
 fun PathChooser() {
     var fsPath by remember { mutableStateOf("") }
     var outPath by remember { mutableStateOf("") }

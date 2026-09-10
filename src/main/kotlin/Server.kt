@@ -104,7 +104,7 @@ class Server(
                     Path(outPath).createDirectories()
                 }
                 Commands.GetList.name -> {
-                    val proc = ProcessBuilder("btrfs restore -v --dry-run".split(" ") + fsPath + ".")
+                    val proc = ProcessBuilder("btrfs restore -vv --dry-run".split(" ") + fsPath + ".")
                         .redirectError(ProcessBuilder.Redirect.appendTo(log))
                         .start()
                     val ins = proc.inputStream.bufferedReader()
@@ -150,9 +150,9 @@ class Server(
                         log.appendText("While restoring $pathInFS\n")
                         log.appendText(errMsg)
                         log.appendText("\n")
-                        println(errMsg)
+                        out.println(errMsg)
                     }
-                    println(restorationDone)
+                    out.println(restorationDone)
                 }
             }
         }

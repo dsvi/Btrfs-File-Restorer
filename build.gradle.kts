@@ -21,13 +21,13 @@ dependencies {
     // (in a separate module for demo project and in testMain).
     // With compose.desktop.common you will also lose @Preview functionality
     implementation(compose.desktop.currentOs)
-    implementation(compose.material3)
-    implementation("com.materialkolor:material-kolor:1.7.0")
+    implementation("org.jetbrains.compose.material3:material3:1.9.0")
+    implementation("org.jetbrains.compose.material:material-icons-core:1.7.3")
+    implementation("com.materialkolor:material-kolor:5.0.1")
     implementation("io.gitlab.kompose:tree-view:0.0.6")
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.8.1")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.9.0")
     // for Dispatchers.Main
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-swing:1.8.1")
-
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-swing:1.9.0")
     testImplementation(kotlin("test"))
 }
 

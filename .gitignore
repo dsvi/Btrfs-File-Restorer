@@ -41,3 +41,5 @@ bin/
 
 ### test fs images
 *.img
+test-output
+*.AppImage
