@@ -15,8 +15,12 @@ enum class Commands(){
     Recover,
 }
 
-fun getServerCmdLine(): List<String>{
-    var l = File("/proc/self/cmdline").readText().split("\u0000") +"Serve!"
+// The token the GUI appends when it re-spawns this very executable to act as
+// the restore server; main() checks args for it to decide server vs GUI mode.
+val SERVE_FLAG = "Serve!"
+
+fun getServerCmdLine(needsRoot: Boolean = true): List<String>{
+    var l = File("/proc/self/cmdline").readText().split("\u0000") + SERVE_FLAG
     l = listOf(Path("/proc/self/exe").readSymbolicLink().toString()) + l.drop(1)
     // This is to enable debugging. filter out Idea parameters so server wont wait for debugger to connect.
     l = l.filter {
@@ -24,6 +28,10 @@ fun getServerCmdLine(): List<String>{
             !isEmpty() && !startsWith("-javaagent") && !startsWith("-agentlib")
         }
     }
+    // Only block devices need root; a filesystem image is an ordinary file,
+    // so spawn the server directly as the current user.
+    if (!needsRoot)
+        return l
     fun env(name: String): String{
         return System.getenv(name) ?: ""
     }
@@ -37,8 +45,9 @@ private
 val restorationDone = "RestorationdonE"
 
 class ServerController(
+    fsPath: String,
     private val proc: Process =
-        ProcessBuilder(getServerCmdLine())
+        ProcessBuilder(getServerCmdLine(fsPath.startsWith("/dev")))
         .start(),
     private val out: PrintStream = PrintStream(proc.outputStream, true),
     private val ins: BufferedReader = proc.inputStream.bufferedReader(),
@@ -56,7 +65,7 @@ class ServerController(
         val ret = mutableListOf<String>()
         while (true) {
             val l = ins.readLine()
-            if (l.isEmpty())
+            if (l == null || l.isEmpty())
                 break
             ret.add(l)
         }
@@ -83,7 +92,9 @@ class ServerController(
 
 class Server(
     private val ins: BufferedReader = System.`in`.bufferedReader(),
-    private val out: PrintStream = PrintStream(System.out)
+    // autoFlush: the GUI blocks on readLine() waiting for the GetList reply;
+    // without it the output sits in the encoder buffer and both sides wait on each other.
+    private val out: PrintStream = PrintStream(System.out, true)
 ) {
     private lateinit
     var fsPath : String
@@ -114,7 +125,7 @@ class Server(
                             out.println()
                             break
                         }
-                        val prefix = "Restoring ."
+                        val prefix = "Restoring ./"
                         if (l.startsWith(prefix)){
                             val path = l.removePrefix(prefix)
                             out.println(path)
@@ -136,6 +147,7 @@ class Server(
                     }
                     regexpPath = "^$regexpPath$"
                     val proc = ProcessBuilder("btrfs restore --metadata --xattr --symlinks --path-regex".split(" ") + regexpPath + fsPath + outPath)
+                        .redirectOutput(ProcessBuilder.Redirect.appendTo(log))
                         .start()
                     val errBuf = StringWriter()
                     while (true){

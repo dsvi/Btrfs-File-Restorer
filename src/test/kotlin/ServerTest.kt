@@ -10,9 +10,10 @@ class ServerTest {
         val ins1 = PipedInputStream()
         val out1 = PipedOutputStream(ins1)
         val sc = ServerController(
-            ProcessBuilder(listOf<String>("echo")).start(),
-            PrintStream(out1),
-            BufferedReader(InputStreamReader(ins0)) )
+            fsPath = "test.img",
+            proc = ProcessBuilder(listOf<String>("echo")).start(),
+            out = PrintStream(out1),
+            ins = BufferedReader(InputStreamReader(ins0)) )
         val s = Server(BufferedReader(InputStreamReader(ins1)), PrintStream(out0))
         val t = Thread {
             s.serve()
@@ -42,6 +43,11 @@ class ServerTest {
             "/empty-dir",
         )
         assertEquals(expected, sc.getRecoverableFilesList())
+        // The restore used to "succeed" (exit 0, empty stderr) while writing nothing
+        // at all, so assert the bytes actually landed on disk.
+        val deepPath = expected[1]
+        assertEquals("", sc.recover(deepPath))
+        assertEquals(true, File("test-output" + deepPath).isFile)
         sc.recover("/Tomb raider па рюске!/А́а́, Е́е́, И́и́, О́о́, У́у́, Ы́ы́, Э́э́, Ю́ю́, Я́я́.txt")
         sc.quit()
         t.join()

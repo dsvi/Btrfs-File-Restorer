@@ -20,6 +20,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.unit.DpSize
+import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.launch
@@ -35,7 +36,6 @@ enum class FileState{
     Error
 }
 
-val server by lazy { ServerController() }
 
 open class FsTreeElement (
     val name: String,
@@ -201,9 +201,9 @@ class RootFsTreeElement: FsTreeElement(""){
 }
 
 @Composable
-@androidx.compose.ui.tooling.preview.Preview
 fun FilesystemTreeView(fsPath: String, outPath: String){
     val root = remember{ RootFsTreeElement() }
+    val server = remember(fsPath) { ServerController(fsPath) }
 
     fun add(path: List<String>){
         var el: FsTreeElement = root
